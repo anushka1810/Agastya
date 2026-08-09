@@ -3,8 +3,10 @@ import feeDataJson from '../data/fee-data.json.json';
 import { groupByFamily } from '../lib/groupByFamily';
 import { FamilyCard } from './FamilyCard';
 import { StudentRow } from './StudentRow';
-import { MobileDashboard } from './MobileDashboard';
 import { computeStudentState } from '../lib/computeStudentState';
+import { SummaryView } from './SummaryView';
+import { StudentsView } from './StudentsView';
+import { SettingsView } from './SettingsView';
 import type { Student, FeeData } from '../types';
 
 type FilterType = 'ALL' | 'OVERDUE' | 'PARTIALLY_PAID' | 'PAID';
@@ -22,6 +24,7 @@ export function StudentListView() {
   const data = feeDataJson as unknown as FeeData;
   const [filter, setFilter] = useState<FilterType>('ALL');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState<'Summary' | 'Payments' | 'Students' | 'Settings'>('Payments');
 
   // Calculate summary stats
   const totalOutstanding = useMemo(() => {
@@ -78,81 +81,81 @@ export function StudentListView() {
   };
 
   return (
-    <>
-      {/* Mobile View */}
-      <MobileDashboard data={data} totalOutstanding={totalOutstanding} overdueCount={overdueCount} />
-
-      {/* Desktop View */}
-      <div className="bg-background text-on-background h-screen hidden md:flex flex-col overflow-hidden">
-        {/* Top Section (Fixed) */}
-        <header className="flex-shrink-0 bg-surface z-10 border-b border-outline-variant">
-          {/* TopAppBar - Fixed Contrast */}
-          <div className="flex justify-between items-center px-[24px] py-[8px] w-full font-headline-md h-16" style={{ backgroundColor: '#0F1729', color: '#FFFFFF' }}>
-            <div className="flex items-center gap-[8px]">
-              <div className="w-8 h-8 rounded-full bg-[#1e293b] text-white flex items-center justify-center font-bold text-sm">
-                LA
-              </div>
-              <h1 className="text-[20px] leading-[28px] font-bold text-white">EduFinance Admin</h1>
+    <div className="bg-background text-on-background h-screen flex flex-col overflow-hidden">
+      {/* Top Section (Fixed) */}
+      <header className="flex-shrink-0 bg-surface z-10 border-b border-outline-variant">
+        {/* TopAppBar - Fixed Contrast */}
+        <div className="flex justify-between items-center px-[24px] py-[8px] w-full font-headline-md h-16" style={{ backgroundColor: '#0F1729', color: '#FFFFFF' }}>
+          <div className="flex items-center gap-[8px]">
+            <div className="w-8 h-8 rounded-full bg-[#1e293b] text-white flex items-center justify-center font-bold text-sm">
+              LA
             </div>
-            <div className="flex items-center gap-[16px] text-[#F1F5F9]">
-              <span className="material-symbols-outlined cursor-pointer hover:text-white">search</span>
-              <span className="material-symbols-outlined cursor-pointer hover:text-white">settings</span>
-            </div>
+            <h1 className="text-[20px] leading-[28px] font-bold text-white">EduFinance Admin</h1>
           </div>
-          
-          {/* Dashboard Summary */}
-          <div className="px-[16px] py-[24px] max-w-[1280px] mx-auto w-full">
-            <h2 className="text-[20px] leading-[28px] font-semibold mb-[16px] text-on-surface">Fee Collection</h2>
-            <div className="grid grid-cols-2 gap-[8px]">
-              <div className="bg-surface-container-low border border-outline-variant rounded-lg p-[16px]">
-                <p className="text-[14px] leading-[20px] text-on-surface-variant mb-[4px]">Total Outstanding</p>
-                <p className="text-[24px] leading-[32px] text-error font-bold tabular-nums">
-                  {formatCurrency(totalOutstanding)}
-                </p>
-              </div>
-              <div className="bg-surface-container-low border border-outline-variant rounded-lg p-[16px]">
-                <p className="text-[14px] leading-[20px] text-on-surface-variant mb-[4px]">Overdue Students</p>
-                <p className="text-[24px] leading-[32px] text-primary font-bold tabular-nums">
-                  {overdueCount}
-                </p>
-              </div>
-            </div>
+          <div className="flex items-center gap-[16px] text-[#F1F5F9]">
+            <span className="material-symbols-outlined cursor-pointer hover:text-white">search</span>
+            <span className="material-symbols-outlined cursor-pointer hover:text-white">settings</span>
           </div>
-
-          {/* Filter Chips & Bulk Actions Bar */}
-          <div className="px-[16px] pb-[16px] max-w-[1280px] mx-auto w-full flex justify-between items-center border-b border-outline-variant">
-            <div className="flex gap-2 overflow-x-auto">
-              {(['ALL', 'OVERDUE', 'PARTIALLY_PAID', 'PAID'] as FilterType[]).map((f) => (
-                <button
-                  key={f}
-                  onClick={() => setFilter(f)}
-                  className={`px-3 py-1.5 rounded-full text-[14px] font-semibold whitespace-nowrap border ${
-                    filter === f 
-                      ? 'bg-primary-container text-on-primary-container border-primary-container' 
-                      : 'bg-surface border-outline-variant text-on-surface hover:bg-surface-container-low'
-                  }`}
-                >
-                  {f.replace('_', ' ')}
-                </button>
-              ))}
+        </div>
+        
+        {activeTab === 'Payments' && (
+          <>
+            {/* Dashboard Summary */}
+            <div className="px-[16px] py-[16px] max-w-[1280px] mx-auto w-full">
+              <h2 className="text-[18px] leading-[24px] font-semibold mb-[12px] text-on-surface">Fee Collection</h2>
+              <div className="grid grid-cols-2 gap-[8px]">
+                <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-[16px]">
+                  <p className="text-[12px] leading-[16px] text-on-surface-variant mb-[4px]">Total Outstanding</p>
+                  <p className="text-[20px] leading-[28px] text-error font-bold tabular-nums">
+                    {formatCurrency(totalOutstanding)}
+                  </p>
+                </div>
+                <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-[16px]">
+                  <p className="text-[12px] leading-[16px] text-on-surface-variant mb-[4px]">Overdue Students</p>
+                  <p className="text-[20px] leading-[28px] text-primary font-bold tabular-nums">
+                    {overdueCount}
+                  </p>
+                </div>
+              </div>
             </div>
-            
-            <div className="flex items-center gap-4">
-              <label className="flex items-center gap-2 cursor-pointer">
+
+            {/* Filter Chips & Bulk Actions */}
+            <div className="px-[16px] pb-[12px] max-w-[1280px] mx-auto w-full flex flex-col gap-[12px] border-b border-outline-variant">
+              {/* Chips */}
+              <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+                {(['ALL', 'OVERDUE', 'PARTIALLY_PAID', 'PAID'] as FilterType[]).map((f) => (
+                  <button
+                    key={f}
+                    onClick={() => setFilter(f)}
+                    className={`px-4 py-1.5 rounded-full text-[12px] font-semibold whitespace-nowrap border ${
+                      filter === f 
+                        ? 'bg-primary text-on-primary border-primary' 
+                        : 'bg-surface-container-lowest border-outline-variant text-on-surface hover:bg-surface-container-low'
+                    }`}
+                  >
+                    {f.replace('_', ' ')}
+                  </button>
+                ))}
+              </div>
+              
+              {/* Select All */}
+              <label className="flex items-center gap-2 cursor-pointer pt-1">
                 <input 
                   type="checkbox" 
-                  className="rounded text-primary focus:ring-primary h-5 w-5 border-outline-variant cursor-pointer" 
+                  className="rounded text-primary focus:ring-primary h-[18px] w-[18px] border-outline-variant cursor-pointer" 
                   checked={allOverdueSelected}
                   onChange={handleSelectAllOverdue}
                 />
-                <span className="text-[14px] font-semibold text-on-surface">Select all overdue</span>
+                <span className="text-[13px] font-semibold text-primary">Select all overdue</span>
               </label>
             </div>
-          </div>
-        </header>
+          </>
+        )}
+      </header>
 
-        {/* Main List (Scrollable) */}
-        <main className="flex-grow overflow-y-auto px-[16px] py-[24px] pb-[160px]">
+      {/* Main List (Scrollable) */}
+      <main className="flex-grow overflow-y-auto px-[16px] py-[16px] pb-[200px]">
+        {activeTab === 'Payments' && (
           <div className="max-w-[1280px] mx-auto w-full space-y-[8px]">
             {familyGroups.length === 0 ? (
               <div className="text-center py-12 text-on-surface-variant text-[14px]">
@@ -183,11 +186,17 @@ export function StudentListView() {
               })
             )}
           </div>
-        </main>
+        )}
         
-        {/* Floating Bulk Action Area (Desktop) */}
-        <div className="fixed bottom-0 left-0 w-full p-4 bg-gradient-to-t from-surface via-surface to-transparent pointer-events-none z-20">
-          <div className="max-w-[1280px] mx-auto flex justify-end">
+        {activeTab === 'Summary' && <SummaryView data={data} />}
+        {activeTab === 'Students' && <StudentsView data={data} />}
+        {activeTab === 'Settings' && <SettingsView />}
+      </main>
+      
+      {/* Floating Bulk Action Area */}
+      {activeTab === 'Payments' && (
+        <div className="fixed bottom-[64px] md:bottom-0 left-0 w-full p-4 bg-gradient-to-t from-surface via-surface to-transparent pointer-events-none z-20">
+          <div className="max-w-[1280px] mx-auto flex justify-center md:justify-end">
              <button 
                 onClick={() => {
                   if (selectedIds.length > 0) {
@@ -196,14 +205,46 @@ export function StudentListView() {
                     alert('Please select at least one student first.');
                   }
                 }}
-                className="pointer-events-auto bg-primary text-on-primary font-bold py-3 px-6 rounded-xl shadow-md hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                className="pointer-events-auto w-full md:w-auto bg-primary text-on-primary font-bold py-3 px-6 rounded-lg shadow-md hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined text-[20px]">send</span>
                 Send Reminder {selectedIds.length > 0 ? `(${selectedIds.length})` : ''}
             </button>
           </div>
         </div>
-      </div>
-    </>
+      )}
+
+      {/* Bottom Navigation (Mobile Only) */}
+      <nav className="fixed bottom-0 left-0 w-full flex justify-around items-center px-2 py-2 bg-surface-container-lowest border-t border-outline-variant shadow-sm z-50 md:hidden h-[64px]">
+        <button 
+          onClick={() => setActiveTab('Summary')}
+          className={`flex flex-col items-center justify-center p-2 w-[72px] transition-colors ${activeTab === 'Summary' ? 'bg-primary-container text-on-primary-container rounded-xl' : 'text-on-surface-variant'}`}
+        >
+          <span className="material-symbols-outlined text-[24px]">account_balance_wallet</span>
+          <span className="text-[10px] font-semibold mt-1">Summary</span>
+        </button>
+        <button 
+          onClick={() => setActiveTab('Payments')}
+          className={`flex flex-col items-center justify-center p-2 w-[72px] transition-colors ${activeTab === 'Payments' ? 'bg-primary-container text-on-primary-container rounded-xl' : 'text-on-surface-variant'}`}
+        >
+          <span className="material-symbols-outlined text-[24px]">receipt_long</span>
+          <span className="text-[10px] font-semibold mt-1">Payments</span>
+        </button>
+        <button 
+          onClick={() => setActiveTab('Students')}
+          className={`flex flex-col items-center justify-center p-2 w-[72px] transition-colors ${activeTab === 'Students' ? 'bg-primary-container text-on-primary-container rounded-xl' : 'text-on-surface-variant'}`}
+        >
+          <span className="material-symbols-outlined text-[24px]">person_search</span>
+          <span className="text-[10px] font-semibold mt-1">Students</span>
+        </button>
+        <button 
+          onClick={() => setActiveTab('Settings')}
+          className={`flex flex-col items-center justify-center p-2 w-[72px] transition-colors ${activeTab === 'Settings' ? 'bg-primary-container text-on-primary-container rounded-xl' : 'text-on-surface-variant'}`}
+        >
+          <span className="material-symbols-outlined text-[24px]">settings</span>
+          <span className="text-[10px] font-semibold mt-1">Settings</span>
+        </button>
+      </nav>
+    </div>
   );
 }
