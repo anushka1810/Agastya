@@ -123,22 +123,22 @@ export function StudentListView() {
          
          {/* Desktop Navigation */}
          <nav className="flex flex-col p-4 space-y-2 mt-4 flex-grow">
-           <button onClick={() => setActiveTab('Summary')} className={`flex items-center gap-4 p-3 rounded-xl transition-colors ${activeTab === 'Summary' ? 'bg-primary-container text-on-primary-container font-semibold shadow-sm' : 'text-on-surface-variant hover:bg-surface-container'}`}>
+           <button onClick={() => setActiveTab('Summary')} className={`flex items-center gap-4 p-3 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface ${activeTab === 'Summary' ? 'bg-primary-container text-on-primary-container font-semibold shadow-sm' : 'text-on-surface-variant hover:bg-surface-container'}`}>
              <span className="material-symbols-outlined text-[20px]">account_balance_wallet</span>
              Summary
            </button>
-           <button onClick={() => setActiveTab('Payments')} className={`flex items-center gap-4 p-3 rounded-xl transition-colors ${activeTab === 'Payments' ? 'bg-primary-container text-on-primary-container font-semibold shadow-sm' : 'text-on-surface-variant hover:bg-surface-container'}`}>
+           <button onClick={() => setActiveTab('Payments')} className={`flex items-center gap-4 p-3 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface ${activeTab === 'Payments' ? 'bg-primary-container text-on-primary-container font-semibold shadow-sm' : 'text-on-surface-variant hover:bg-surface-container'}`}>
              <span className="material-symbols-outlined text-[20px]">receipt_long</span>
              Fee Collection
            </button>
-           <button onClick={() => setActiveTab('Students')} className={`flex items-center gap-4 p-3 rounded-xl transition-colors ${activeTab === 'Students' ? 'bg-primary-container text-on-primary-container font-semibold shadow-sm' : 'text-on-surface-variant hover:bg-surface-container'}`}>
+           <button onClick={() => setActiveTab('Students')} className={`flex items-center gap-4 p-3 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface ${activeTab === 'Students' ? 'bg-primary-container text-on-primary-container font-semibold shadow-sm' : 'text-on-surface-variant hover:bg-surface-container'}`}>
              <span className="material-symbols-outlined text-[20px]">person_search</span>
              Students
            </button>
          </nav>
 
          <div className="p-4 border-t border-outline-variant">
-           <button onClick={() => setActiveTab('Settings')} className={`w-full flex items-center gap-4 p-3 rounded-xl transition-colors ${activeTab === 'Settings' ? 'bg-primary-container text-on-primary-container font-semibold shadow-sm' : 'text-on-surface-variant hover:bg-surface-container'}`}>
+           <button onClick={() => setActiveTab('Settings')} className={`w-full flex items-center gap-4 p-3 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface ${activeTab === 'Settings' ? 'bg-primary-container text-on-primary-container font-semibold shadow-sm' : 'text-on-surface-variant hover:bg-surface-container'}`}>
              <span className="material-symbols-outlined text-[20px]">settings</span>
              Settings
            </button>
@@ -157,8 +157,12 @@ export function StudentListView() {
               <h1 className="text-[20px] leading-[28px] font-bold text-white">EduFinance Admin</h1>
             </div>
             <div className="flex items-center gap-[16px] text-[#F1F5F9]">
-              <span className="material-symbols-outlined cursor-pointer hover:text-white">search</span>
-              <span className="material-symbols-outlined cursor-pointer hover:text-white">settings</span>
+              <button aria-label="Search" className="focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#0F1729] rounded flex">
+                <span className="material-symbols-outlined hover:text-white">search</span>
+              </button>
+              <button aria-label="Settings" className="focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#0F1729] rounded flex">
+                <span className="material-symbols-outlined hover:text-white">settings</span>
+              </button>
             </div>
           </div>
         
@@ -201,7 +205,7 @@ export function StudentListView() {
                   <button
                     key={f}
                     onClick={() => setFilter(f)}
-                    className={`px-4 py-1.5 rounded-full text-[12px] font-semibold whitespace-nowrap border ${
+                    className={`px-4 py-1.5 rounded-full text-[12px] font-semibold whitespace-nowrap border focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background ${
                       filter === f 
                         ? 'bg-primary text-on-primary border-primary' 
                         : 'bg-surface-container-lowest border-outline-variant text-on-surface hover:bg-surface-container-low'
@@ -213,10 +217,10 @@ export function StudentListView() {
               </div>
               
               {/* Select All */}
-              <label className="flex items-center gap-2 cursor-pointer pt-1">
+              <label className="flex items-center gap-2 cursor-pointer pt-1 focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-background rounded">
                 <input 
                   type="checkbox" 
-                  className="rounded text-primary focus:ring-primary h-[18px] w-[18px] border-outline-variant cursor-pointer" 
+                  className="rounded text-primary focus:ring-primary h-[18px] w-[18px] border-outline-variant cursor-pointer focus:ring-0 focus:outline-none" 
                   checked={allOverdueSelected}
                   onChange={handleSelectAllOverdue}
                 />
@@ -338,7 +342,7 @@ export function StudentListView() {
                     alert('Please select at least one student first.');
                   }
                 }}
-                className="pointer-events-auto w-full md:w-auto bg-primary text-on-primary font-bold py-3 px-6 rounded-lg shadow-md hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                className="pointer-events-auto w-full md:w-auto bg-primary text-on-primary font-bold py-3 px-6 rounded-lg shadow-md hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface"
               >
                 <span className="material-symbols-outlined text-[20px]">send</span>
                 Send Reminder {selectedIds.length > 0 ? `(${selectedIds.length})` : ''}
@@ -351,28 +355,28 @@ export function StudentListView() {
       <nav className="fixed bottom-0 left-0 w-full flex justify-around items-center px-2 py-2 bg-surface-container-lowest border-t border-outline-variant shadow-sm z-50 md:hidden h-[64px]">
         <button 
           onClick={() => setActiveTab('Summary')}
-          className={`flex flex-col items-center justify-center p-2 w-[72px] transition-colors ${activeTab === 'Summary' ? 'bg-primary-container text-on-primary-container rounded-xl' : 'text-on-surface-variant'}`}
+          className={`flex flex-col items-center justify-center p-2 w-[72px] transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface ${activeTab === 'Summary' ? 'bg-primary-container text-on-primary-container rounded-xl' : 'text-on-surface-variant'}`}
         >
           <span className="material-symbols-outlined text-[24px]">account_balance_wallet</span>
           <span className="text-[10px] font-semibold mt-1">Summary</span>
         </button>
         <button 
           onClick={() => setActiveTab('Payments')}
-          className={`flex flex-col items-center justify-center p-2 w-[72px] transition-colors ${activeTab === 'Payments' ? 'bg-primary-container text-on-primary-container rounded-xl' : 'text-on-surface-variant'}`}
+          className={`flex flex-col items-center justify-center p-2 w-[72px] transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface ${activeTab === 'Payments' ? 'bg-primary-container text-on-primary-container rounded-xl' : 'text-on-surface-variant'}`}
         >
           <span className="material-symbols-outlined text-[24px]">receipt_long</span>
           <span className="text-[10px] font-semibold mt-1">Payments</span>
         </button>
         <button 
           onClick={() => setActiveTab('Students')}
-          className={`flex flex-col items-center justify-center p-2 w-[72px] transition-colors ${activeTab === 'Students' ? 'bg-primary-container text-on-primary-container rounded-xl' : 'text-on-surface-variant'}`}
+          className={`flex flex-col items-center justify-center p-2 w-[72px] transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface ${activeTab === 'Students' ? 'bg-primary-container text-on-primary-container rounded-xl' : 'text-on-surface-variant'}`}
         >
           <span className="material-symbols-outlined text-[24px]">person_search</span>
           <span className="text-[10px] font-semibold mt-1">Students</span>
         </button>
         <button 
           onClick={() => setActiveTab('Settings')}
-          className={`flex flex-col items-center justify-center p-2 w-[72px] transition-colors ${activeTab === 'Settings' ? 'bg-primary-container text-on-primary-container rounded-xl' : 'text-on-surface-variant'}`}
+          className={`flex flex-col items-center justify-center p-2 w-[72px] transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface ${activeTab === 'Settings' ? 'bg-primary-container text-on-primary-container rounded-xl' : 'text-on-surface-variant'}`}
         >
           <span className="material-symbols-outlined text-[24px]">settings</span>
           <span className="text-[10px] font-semibold mt-1">Settings</span>

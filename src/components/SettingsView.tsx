@@ -40,7 +40,7 @@ export function SettingsView({ onSimulateError }: SettingsViewProps) {
           </div>
           <button 
             onClick={() => setNotifications(!notifications)}
-            className={`w-11 h-6 rounded-full transition-colors relative flex items-center ${notifications ? 'bg-primary' : 'bg-surface-variant border border-outline'}`}
+            className={`w-11 h-6 rounded-full transition-colors relative flex items-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background ${notifications ? 'bg-primary' : 'bg-surface-variant border border-outline'}`}
           >
             <div className={`w-4 h-4 rounded-full bg-white transition-transform absolute ${notifications ? 'translate-x-6' : 'translate-x-1'}`} />
           </button>
@@ -56,7 +56,7 @@ export function SettingsView({ onSimulateError }: SettingsViewProps) {
           </div>
           <button 
             onClick={() => setEmailAlerts(!emailAlerts)}
-            className={`w-11 h-6 rounded-full transition-colors relative flex items-center ${emailAlerts ? 'bg-primary' : 'bg-surface-variant border border-outline'}`}
+            className={`w-11 h-6 rounded-full transition-colors relative flex items-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background ${emailAlerts ? 'bg-primary' : 'bg-surface-variant border border-outline'}`}
           >
             <div className={`w-4 h-4 rounded-full bg-white transition-transform absolute ${emailAlerts ? 'translate-x-6' : 'translate-x-1'}`} />
           </button>
@@ -65,13 +65,13 @@ export function SettingsView({ onSimulateError }: SettingsViewProps) {
 
       <button 
         onClick={onSimulateError}
-        className="w-full bg-surface-container-high text-on-surface font-bold py-3 px-6 rounded-xl shadow-sm hover:bg-surface-variant transition-all flex items-center justify-center gap-2 mt-4 border border-outline-variant"
+        className="w-full bg-surface-container-high text-on-surface font-bold py-3 px-6 rounded-xl shadow-sm hover:bg-surface-variant transition-all flex items-center justify-center gap-2 mt-4 border border-outline-variant focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
       >
         <span className="material-symbols-outlined text-[20px]">warning</span>
         Simulate Data Error
       </button>
 
-      <button className="w-full bg-error-container text-on-error-container font-bold py-3 px-6 rounded-xl shadow-sm hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4">
+      <button className="w-full bg-error-container text-on-error-container font-bold py-3 px-6 rounded-xl shadow-sm hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4 focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2 focus:ring-offset-background">
         <span className="material-symbols-outlined text-[20px]">logout</span>
         Log Out
       </button>

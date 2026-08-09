@@ -30,7 +30,7 @@ export function StudentRow({ student, selected, onToggle, onClickRow }: StudentR
 
   return (
     <div 
-      className={`bg-surface-container-lowest border border-outline-variant rounded-lg p-3 flex items-start gap-3 shadow-sm ${onClickRow ? 'cursor-pointer hover:bg-surface-container-low focus:outline-none focus:ring-2 focus:ring-primary' : ''}`}
+      className={`bg-surface-container-lowest border border-outline-variant rounded-lg p-3 flex items-start gap-3 shadow-sm ${onClickRow ? 'cursor-pointer hover:bg-surface-container-low focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background' : ''}`}
       onClick={() => onClickRow?.(student)}
       onKeyDown={(e) => {
         if (e.key === 'Enter' && onClickRow) {
@@ -41,7 +41,7 @@ export function StudentRow({ student, selected, onToggle, onClickRow }: StudentR
       role={onClickRow ? 'button' : undefined}
     >
       <input 
-        className="mt-1 rounded text-primary focus:ring-primary h-[18px] w-[18px] border-outline-variant cursor-pointer" 
+        className="mt-1 rounded text-primary focus:ring-primary h-[18px] w-[18px] border-outline-variant cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background" 
         type="checkbox" 
         checked={selected}
         onChange={(e) => onToggle(student.id, e.target.checked)}

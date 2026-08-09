@@ -28,7 +28,7 @@ export function StudentsView({ data }: { data: FeeData }) {
           placeholder="Search by name or admission number..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full bg-surface-container-lowest border border-outline-variant rounded-xl py-3 pl-10 pr-4 text-[14px] focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+          className="w-full bg-surface-container-lowest border border-outline-variant rounded-xl py-3 pl-10 pr-4 text-[14px] focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background transition-all"
         />
       </div>
 

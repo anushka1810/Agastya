@@ -73,7 +73,7 @@ export function StudentDetailModal({ student, onClose }: StudentDetailModalProps
           </div>
           <button 
             onClick={onClose}
-            className="w-10 h-10 rounded-full hover:bg-surface-container-low flex items-center justify-center text-on-surface transition-colors focus:outline-none focus:ring-2 focus:ring-primary shrink-0"
+            className="w-10 h-10 rounded-full hover:bg-surface-container-low flex items-center justify-center text-on-surface transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background shrink-0"
             aria-label="Close details"
           >
             <span className="material-symbols-outlined text-[24px]">close</span>
