@@ -7,6 +7,7 @@ import { computeStudentState } from '../lib/computeStudentState';
 import { SummaryView } from './SummaryView';
 import { StudentsView } from './StudentsView';
 import { SettingsView } from './SettingsView';
+import { StudentDetailModal } from './StudentDetailModal';
 import type { Student, FeeData } from '../types';
 
 type FilterType = 'ALL' | 'OVERDUE' | 'PARTIALLY_PAID' | 'PAID';
@@ -25,6 +26,7 @@ export function StudentListView() {
   const [filter, setFilter] = useState<FilterType>('ALL');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<'Summary' | 'Payments' | 'Students' | 'Settings'>('Payments');
+  const [selectedStudentForDetails, setSelectedStudentForDetails] = useState<Student | null>(null);
 
   // Calculate summary stats
   const totalOutstanding = useMemo(() => {
@@ -81,22 +83,61 @@ export function StudentListView() {
   };
 
   return (
-    <div className="bg-background text-on-background h-screen flex flex-col overflow-hidden">
-      {/* Top Section (Fixed) */}
-      <header className="flex-shrink-0 bg-surface z-10 border-b border-outline-variant">
-        {/* TopAppBar - Fixed Contrast */}
-        <div className="flex justify-between items-center px-[24px] py-[8px] w-full font-headline-md h-16" style={{ backgroundColor: '#0F1729', color: '#FFFFFF' }}>
-          <div className="flex items-center gap-[8px]">
-            <div className="w-8 h-8 rounded-full bg-[#1e293b] text-white flex items-center justify-center font-bold text-sm">
+    <div className="bg-background text-on-background h-screen flex flex-col md:flex-row overflow-hidden">
+      
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:flex flex-col w-[250px] bg-surface border-r border-outline-variant flex-shrink-0 shadow-sm z-20">
+         {/* Desktop Header */}
+         <div className="flex items-center gap-[12px] px-[20px] py-[16px] bg-[#0F1729]">
+            <div className="w-10 h-10 rounded-full bg-[#1e293b] text-white flex items-center justify-center font-bold text-sm shadow-sm border border-[#334155]">
               LA
             </div>
-            <h1 className="text-[20px] leading-[28px] font-bold text-white">EduFinance Admin</h1>
+            <div>
+              <h1 className="text-[16px] leading-[20px] font-bold text-white">EduFinance</h1>
+              <p className="text-[12px] text-[#94a3b8]">Admin Dashboard</p>
+            </div>
+         </div>
+         
+         {/* Desktop Navigation */}
+         <nav className="flex flex-col p-4 space-y-2 mt-4 flex-grow">
+           <button onClick={() => setActiveTab('Summary')} className={`flex items-center gap-4 p-3 rounded-xl transition-colors ${activeTab === 'Summary' ? 'bg-primary-container text-on-primary-container font-semibold shadow-sm' : 'text-on-surface-variant hover:bg-surface-container'}`}>
+             <span className="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+             Summary
+           </button>
+           <button onClick={() => setActiveTab('Payments')} className={`flex items-center gap-4 p-3 rounded-xl transition-colors ${activeTab === 'Payments' ? 'bg-primary-container text-on-primary-container font-semibold shadow-sm' : 'text-on-surface-variant hover:bg-surface-container'}`}>
+             <span className="material-symbols-outlined text-[20px]">receipt_long</span>
+             Fee Collection
+           </button>
+           <button onClick={() => setActiveTab('Students')} className={`flex items-center gap-4 p-3 rounded-xl transition-colors ${activeTab === 'Students' ? 'bg-primary-container text-on-primary-container font-semibold shadow-sm' : 'text-on-surface-variant hover:bg-surface-container'}`}>
+             <span className="material-symbols-outlined text-[20px]">person_search</span>
+             Students
+           </button>
+         </nav>
+
+         <div className="p-4 border-t border-outline-variant">
+           <button onClick={() => setActiveTab('Settings')} className={`w-full flex items-center gap-4 p-3 rounded-xl transition-colors ${activeTab === 'Settings' ? 'bg-primary-container text-on-primary-container font-semibold shadow-sm' : 'text-on-surface-variant hover:bg-surface-container'}`}>
+             <span className="material-symbols-outlined text-[20px]">settings</span>
+             Settings
+           </button>
+         </div>
+      </aside>
+
+      <div className="flex flex-col flex-grow overflow-hidden relative">
+        {/* Top Section (Fixed) - Hidden on Desktop */}
+        <header className="flex-shrink-0 bg-surface z-10 border-b border-outline-variant">
+          {/* TopAppBar - Fixed Contrast (Mobile Only) */}
+          <div className="md:hidden flex justify-between items-center px-[24px] py-[8px] w-full font-headline-md h-16" style={{ backgroundColor: '#0F1729', color: '#FFFFFF' }}>
+            <div className="flex items-center gap-[8px]">
+              <div className="w-8 h-8 rounded-full bg-[#1e293b] text-white flex items-center justify-center font-bold text-sm">
+                LA
+              </div>
+              <h1 className="text-[20px] leading-[28px] font-bold text-white">EduFinance Admin</h1>
+            </div>
+            <div className="flex items-center gap-[16px] text-[#F1F5F9]">
+              <span className="material-symbols-outlined cursor-pointer hover:text-white">search</span>
+              <span className="material-symbols-outlined cursor-pointer hover:text-white">settings</span>
+            </div>
           </div>
-          <div className="flex items-center gap-[16px] text-[#F1F5F9]">
-            <span className="material-symbols-outlined cursor-pointer hover:text-white">search</span>
-            <span className="material-symbols-outlined cursor-pointer hover:text-white">settings</span>
-          </div>
-        </div>
         
         {activeTab === 'Payments' && (
           <>
@@ -154,7 +195,7 @@ export function StudentListView() {
       </header>
 
       {/* Main List (Scrollable) */}
-      <main className="flex-grow overflow-y-auto px-[16px] py-[16px] pb-[200px]">
+      <main className="flex-grow overflow-y-auto px-[16px] py-[16px] pb-[200px] md:pb-[100px]">
         {activeTab === 'Payments' && (
           <div className="max-w-[1280px] mx-auto w-full space-y-[8px]">
             {familyGroups.length === 0 ? (
@@ -170,6 +211,7 @@ export function StudentListView() {
                       group={group} 
                       selectedIds={selectedIds}
                       onToggle={handleToggleStudent}
+                      onClickRow={setSelectedStudentForDetails}
                     />
                   );
                 } else {
@@ -180,6 +222,7 @@ export function StudentListView() {
                       student={student} 
                       selected={selectedIds.includes(student.id)}
                       onToggle={handleToggleStudent}
+                      onClickRow={setSelectedStudentForDetails}
                     />
                   );
                 }
@@ -196,7 +239,7 @@ export function StudentListView() {
       {/* Floating Bulk Action Area */}
       {activeTab === 'Payments' && (
         <div className="fixed bottom-[64px] md:bottom-0 left-0 w-full p-4 bg-gradient-to-t from-surface via-surface to-transparent pointer-events-none z-20">
-          <div className="max-w-[1280px] mx-auto flex justify-center md:justify-end">
+          <div className="max-w-[1280px] mx-auto flex justify-center md:justify-end md:pl-[250px]">
              <button 
                 onClick={() => {
                   if (selectedIds.length > 0) {
@@ -245,6 +288,15 @@ export function StudentListView() {
           <span className="text-[10px] font-semibold mt-1">Settings</span>
         </button>
       </nav>
+
+      {/* Detail Modal */}
+      {selectedStudentForDetails && (
+        <StudentDetailModal 
+          student={selectedStudentForDetails} 
+          onClose={() => setSelectedStudentForDetails(null)} 
+        />
+      )}
+      </div>
     </div>
   );
 }

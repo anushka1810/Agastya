@@ -7,6 +7,7 @@ interface StudentRowProps {
   student: Student;
   selected: boolean;
   onToggle: (id: string, selected: boolean) => void;
+  onClickRow?: (student: Student) => void;
 }
 
 const formatCurrency = (amount: number) => {
@@ -18,7 +19,7 @@ const formatCurrency = (amount: number) => {
   }).format(amount);
 };
 
-export function StudentRow({ student, selected, onToggle }: StudentRowProps) {
+export function StudentRow({ student, selected, onToggle, onClickRow }: StudentRowProps) {
   const state = computeStudentState(student);
   
   // Format based on the image provided
@@ -28,12 +29,24 @@ export function StudentRow({ student, selected, onToggle }: StudentRowProps) {
     : formatCurrency(student.balance);
 
   return (
-    <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-3 flex items-start gap-3 shadow-sm">
+    <div 
+      className={`bg-surface-container-lowest border border-outline-variant rounded-lg p-3 flex items-start gap-3 shadow-sm ${onClickRow ? 'cursor-pointer hover:bg-surface-container-low focus:outline-none focus:ring-2 focus:ring-primary' : ''}`}
+      onClick={() => onClickRow?.(student)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' && onClickRow) {
+          onClickRow(student);
+        }
+      }}
+      tabIndex={onClickRow ? 0 : undefined}
+      role={onClickRow ? 'button' : undefined}
+    >
       <input 
         className="mt-1 rounded text-primary focus:ring-primary h-[18px] w-[18px] border-outline-variant cursor-pointer" 
         type="checkbox" 
         checked={selected}
         onChange={(e) => onToggle(student.id, e.target.checked)}
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
       />
       <div className="flex-grow">
         <div className="flex justify-between items-start">
