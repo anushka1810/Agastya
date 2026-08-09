@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import feeDataJson from '../data/fee-data.json.json';
 import { groupByFamily } from '../lib/groupByFamily';
 import { FamilyCard } from './FamilyCard';
@@ -22,25 +22,47 @@ const formatCurrency = (amount: number) => {
 };
 
 export function StudentListView() {
-  const data = feeDataJson as unknown as FeeData;
+  const [data, setData] = useState<FeeData | null>(null);
+  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [filter, setFilter] = useState<FilterType>('ALL');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<'Summary' | 'Payments' | 'Students' | 'Settings'>('Payments');
   const [selectedStudentForDetails, setSelectedStudentForDetails] = useState<Student | null>(null);
 
+  const fetchData = () => {
+    setStatus('loading');
+    setData(null);
+    setTimeout(() => {
+      setData(feeDataJson as unknown as FeeData);
+      setStatus('success');
+    }, 1500);
+  };
+
+  const simulateError = () => {
+    setStatus('error');
+    setData(null);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   // Calculate summary stats
   const totalOutstanding = useMemo(() => {
+    if (!data) return 0;
     return data.students.reduce((acc, student) => {
       return acc + (student.balance > 0 ? student.balance : 0);
     }, 0);
-  }, [data.students]);
+  }, [data]);
 
   const overdueCount = useMemo(() => {
+    if (!data) return 0;
     return data.students.filter(s => s.status === 'OVERDUE').length;
-  }, [data.students]);
+  }, [data]);
 
   // Filter students
   const filteredStudents = useMemo(() => {
+    if (!data) return [];
     if (filter === 'ALL') return data.students as Student[];
     return (data.students as Student[]).filter(s => {
       if (filter === 'OVERDUE') return s.status === 'OVERDUE';
@@ -48,7 +70,7 @@ export function StudentListView() {
       if (filter === 'PAID') return s.status === 'PAID';
       return true;
     });
-  }, [data.students, filter]);
+  }, [data, filter]);
 
   // Group filtered students
   const familyGroups = useMemo(() => {
@@ -57,10 +79,11 @@ export function StudentListView() {
 
   // Selection Logic
   const overdueStudentIds = useMemo(() => {
+    if (!data) return [];
     return data.students
       .filter(s => computeStudentState(s).displayStatus.label === 'Overdue')
       .map(s => s.id);
-  }, [data.students]);
+  }, [data]);
 
   const allOverdueSelected = overdueStudentIds.length > 0 && overdueStudentIds.every(id => selectedIds.includes(id));
 
@@ -141,21 +164,31 @@ export function StudentListView() {
         
         {activeTab === 'Payments' && (
           <>
-            {/* Dashboard Summary */}
+            {status !== 'error' && (
+              <>
+                {/* Dashboard Summary */}
             <div className="px-[16px] py-[16px] max-w-[1280px] mx-auto w-full">
               <h2 className="text-[18px] leading-[24px] font-semibold mb-[12px] text-on-surface">Fee Collection</h2>
               <div className="grid grid-cols-2 gap-[8px]">
                 <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-[16px]">
                   <p className="text-[12px] leading-[16px] text-on-surface-variant mb-[4px]">Total Outstanding</p>
-                  <p className="text-[20px] leading-[28px] text-error font-bold tabular-nums">
-                    {formatCurrency(totalOutstanding)}
-                  </p>
+                  {status === 'loading' ? (
+                    <div className="h-[28px] w-24 bg-surface-container-highest animate-pulse rounded"></div>
+                  ) : (
+                    <p className="text-[20px] leading-[28px] text-error font-bold tabular-nums">
+                      {formatCurrency(totalOutstanding)}
+                    </p>
+                  )}
                 </div>
                 <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-[16px]">
                   <p className="text-[12px] leading-[16px] text-on-surface-variant mb-[4px]">Overdue Students</p>
-                  <p className="text-[20px] leading-[28px] text-primary font-bold tabular-nums">
-                    {overdueCount}
-                  </p>
+                  {status === 'loading' ? (
+                    <div className="h-[28px] w-16 bg-surface-container-highest animate-pulse rounded"></div>
+                  ) : (
+                    <p className="text-[20px] leading-[28px] text-primary font-bold tabular-nums">
+                      {overdueCount}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -190,6 +223,8 @@ export function StudentListView() {
                 <span className="text-[13px] font-semibold text-primary">Select all overdue</span>
               </label>
             </div>
+              </>
+            )}
           </>
         )}
       </header>
@@ -198,9 +233,64 @@ export function StudentListView() {
       <main className="flex-grow overflow-y-auto px-[16px] py-[16px] pb-[200px] md:pb-[100px]">
         {activeTab === 'Payments' && (
           <div className="max-w-[1280px] mx-auto w-full space-y-[8px]">
-            {familyGroups.length === 0 ? (
-              <div className="text-center py-12 text-on-surface-variant text-[14px]">
-                No students found matching this filter.
+            {status === 'loading' ? (
+              // Loading Skeleton
+              [1, 2, 3, 4].map((i) => (
+                <div key={i} className="bg-surface-container-lowest border border-outline-variant rounded-lg p-3 flex items-start gap-3 shadow-sm animate-pulse">
+                  <div className="mt-1 rounded h-[18px] w-[18px] bg-surface-container-highest"></div>
+                  <div className="flex-grow space-y-2">
+                    <div className="flex justify-between items-start">
+                      <div className="h-5 w-32 bg-surface-container-highest rounded"></div>
+                      <div className="h-5 w-20 bg-surface-container-highest rounded"></div>
+                    </div>
+                    <div className="h-4 w-48 bg-surface-container-highest rounded mt-1"></div>
+                    <div className="flex gap-2 mt-2">
+                      <div className="h-5 w-16 bg-surface-container-highest rounded-full"></div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : status === 'error' ? (
+              // Error State
+              <div className="flex flex-col items-center justify-center py-16 text-center">
+                <span className="material-symbols-outlined text-[48px] text-error mb-4">error</span>
+                <h3 className="text-[18px] font-bold text-on-surface mb-2">Failed to load fee data</h3>
+                <p className="text-[14px] text-on-surface-variant mb-6">There was a problem connecting to the server.</p>
+                <button 
+                  onClick={fetchData}
+                  className="bg-primary text-on-primary font-bold py-2 px-6 rounded-lg shadow-sm hover:opacity-90 transition-all flex items-center justify-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-[20px]">refresh</span>
+                  Retry
+                </button>
+              </div>
+            ) : familyGroups.length === 0 ? (
+              // Empty State
+              <div className="flex flex-col items-center justify-center py-16 text-center px-4">
+                {filter === 'OVERDUE' && (
+                  <>
+                    <span className="material-symbols-outlined text-[48px] text-primary mb-4">celebration</span>
+                    <h3 className="text-[16px] font-bold text-on-surface">No overdue students right now — nice work!</h3>
+                  </>
+                )}
+                {filter === 'PARTIALLY_PAID' && (
+                  <>
+                    <span className="material-symbols-outlined text-[48px] text-on-surface-variant mb-4">account_balance_wallet</span>
+                    <h3 className="text-[16px] font-bold text-on-surface">No partially paid students.</h3>
+                  </>
+                )}
+                {filter === 'PAID' && (
+                  <>
+                    <span className="material-symbols-outlined text-[48px] text-on-surface-variant mb-4">task</span>
+                    <h3 className="text-[16px] font-bold text-on-surface">No fully paid students yet.</h3>
+                  </>
+                )}
+                {filter === 'ALL' && (
+                  <>
+                    <span className="material-symbols-outlined text-[48px] text-on-surface-variant mb-4">inbox</span>
+                    <h3 className="text-[16px] font-bold text-on-surface">No students found.</h3>
+                  </>
+                )}
               </div>
             ) : (
               familyGroups.map(group => {
@@ -231,9 +321,9 @@ export function StudentListView() {
           </div>
         )}
         
-        {activeTab === 'Summary' && <SummaryView data={data} />}
-        {activeTab === 'Students' && <StudentsView data={data} />}
-        {activeTab === 'Settings' && <SettingsView />}
+        {activeTab === 'Summary' && data && <SummaryView data={data} />}
+        {activeTab === 'Students' && data && <StudentsView data={data} />}
+        {activeTab === 'Settings' && <SettingsView onSimulateError={simulateError} />}
       </main>
       
       {/* Floating Bulk Action Area */}

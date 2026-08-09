@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-export function SettingsView() {
+interface SettingsViewProps {
+  onSimulateError: () => void;
+}
+
+export function SettingsView({ onSimulateError }: SettingsViewProps) {
   const [notifications, setNotifications] = useState(true);
   const [emailAlerts, setEmailAlerts] = useState(false);
 
@@ -59,7 +63,15 @@ export function SettingsView() {
         </div>
       </div>
 
-      <button className="w-full bg-error-container text-on-error-container font-bold py-3 px-6 rounded-xl shadow-sm hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-8">
+      <button 
+        onClick={onSimulateError}
+        className="w-full bg-surface-container-high text-on-surface font-bold py-3 px-6 rounded-xl shadow-sm hover:bg-surface-variant transition-all flex items-center justify-center gap-2 mt-4 border border-outline-variant"
+      >
+        <span className="material-symbols-outlined text-[20px]">warning</span>
+        Simulate Data Error
+      </button>
+
+      <button className="w-full bg-error-container text-on-error-container font-bold py-3 px-6 rounded-xl shadow-sm hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4">
         <span className="material-symbols-outlined text-[20px]">logout</span>
         Log Out
       </button>
