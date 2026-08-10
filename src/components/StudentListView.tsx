@@ -183,7 +183,7 @@ export function StudentListView() {
                   {/* Dashboard Summary */}
                   <div className="px-[16px] py-[16px] max-w-[1280px] mx-auto w-full">
                     <h2 className="text-[18px] leading-[24px] font-semibold mb-[12px] text-on-surface">Fee Collection</h2>
-                    <div className="grid grid-cols-2 gap-[8px]">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-[8px]">
                       <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-[16px]">
                         <p className="text-[12px] leading-[16px] text-on-surface-variant mb-[4px]">Total Outstanding</p>
                         {status === 'loading' ? (
