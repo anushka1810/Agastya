@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type { FamilyGroup } from '../lib/groupByFamily';
 import { StudentRow } from './StudentRow';
 import type { Student } from '../types';

@@ -1,4 +1,4 @@
-import React from 'react';
+
 
 type StatusColor = 'red' | 'red-distinct' | 'amber' | 'green' | 'blue' | 'neutral';
 

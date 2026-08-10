@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { StudentListView } from './components/StudentListView';
 
 function App() {

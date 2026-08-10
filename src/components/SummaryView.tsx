@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import type { FeeData } from '../types';
 
 const formatCurrency = (amount: number) => {

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import type { FeeData } from '../types';
 
 export function StudentsView({ data }: { data: FeeData }) {
