@@ -10,7 +10,7 @@ import { SettingsView } from './SettingsView';
 import { StudentDetailModal } from './StudentDetailModal';
 import type { Student, FeeData } from '../types';
 
-type FilterType = 'ALL' | 'OVERDUE' | 'PARTIALLY_PAID' | 'PAID';
+type FilterType = 'ALL' | 'OVERDUE' | 'PAYMENT_FAILED' | 'PARTIALLY_PAID' | 'PAID' | 'INSTALMENT_PLAN' | 'CREDIT_BALANCE' | 'WITHDRAWN';
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -60,16 +60,21 @@ export function StudentListView() {
     return data.students.filter(s => s.status === 'OVERDUE').length;
   }, [data]);
 
+  // Compute counts for all statuses
+  const filterCounts = useMemo(() => {
+    if (!data) return {} as Record<FilterType, number>;
+    const counts: Record<string, number> = { ALL: data.students.length };
+    data.students.forEach(s => {
+      counts[s.status] = (counts[s.status] || 0) + 1;
+    });
+    return counts as Record<FilterType, number>;
+  }, [data]);
+
   // Filter students
   const filteredStudents = useMemo(() => {
     if (!data) return [];
     if (filter === 'ALL') return data.students as Student[];
-    return (data.students as Student[]).filter(s => {
-      if (filter === 'OVERDUE') return s.status === 'OVERDUE';
-      if (filter === 'PARTIALLY_PAID') return s.status === 'PARTIALLY_PAID';
-      if (filter === 'PAID') return s.status === 'PAID';
-      return true;
-    });
+    return (data.students as Student[]).filter(s => s.status === filter);
   }, [data, filter]);
 
   // Group filtered students (Desktop)
@@ -206,18 +211,24 @@ export function StudentListView() {
                   <div className="hidden md:flex px-[16px] pb-[12px] max-w-[1280px] mx-auto w-full flex-col gap-[12px] border-b border-outline-variant">
                     {/* Chips */}
                     <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-                      {(['ALL', 'OVERDUE', 'PARTIALLY_PAID', 'PAID'] as FilterType[]).map((f) => (
-                        <button
-                          key={f}
-                          onClick={() => setFilter(f)}
-                          className={`px-4 py-1.5 rounded-full text-[12px] font-semibold whitespace-nowrap border ${filter === f
-                              ? 'bg-primary text-white border-primary'
-                              : 'bg-surface-container-lowest border-outline-variant text-on-surface hover:bg-surface-container-low'
-                            }`}
-                        >
-                          {f.replace('_', ' ')}
-                        </button>
-                      ))}
+                      {(['ALL', 'OVERDUE', 'PAYMENT_FAILED', 'PARTIALLY_PAID', 'PAID', 'INSTALMENT_PLAN', 'CREDIT_BALANCE', 'WITHDRAWN'] as FilterType[]).map((f) => {
+                        const count = filterCounts[f] || 0;
+                        return (
+                          <button
+                            key={f}
+                            onClick={() => setFilter(f)}
+                            className={`px-4 py-1.5 rounded-full text-[12px] font-semibold whitespace-nowrap border flex items-center gap-2 ${filter === f
+                                ? 'bg-primary text-white border-primary'
+                                : 'bg-surface-container-lowest border-outline-variant text-on-surface hover:bg-surface-container-low'
+                              }`}
+                          >
+                            <span>{f.replace('_', ' ')}</span>
+                            <span className={`px-1.5 py-0.5 rounded-full text-[10px] ${filter === f ? 'bg-white/20 text-white' : 'bg-surface-container-highest text-on-surface-variant'}`}>
+                              {count}
+                            </span>
+                          </button>
+                        );
+                      })}
                     </div>
 
                     {/* Select All */}

@@ -119,6 +119,44 @@ export function StudentDetailModal({ student, onClose }: StudentDetailModalProps
             </section>
           )}
 
+          {/* Withdrawn Notice */}
+          {student.status === 'WITHDRAWN' && (
+            <section>
+              <div className="bg-surface-container-highest border-l-4 border-outline rounded-r-xl p-4 shadow-sm">
+                <h3 className="text-[16px] font-bold text-on-surface mb-1 flex items-center gap-2">
+                  <span className="material-symbols-outlined text-[20px]">no_accounts</span>
+                  Student Withdrawn
+                </h3>
+                <p className="text-[14px] text-on-surface-variant">
+                  Withdrawn on: <span className="font-semibold text-on-surface">{student.withdrawnOn}</span>
+                </p>
+                {student.refundDue !== undefined && (
+                  <p className="text-[14px] text-on-surface-variant mt-1">
+                    Refund Due: <span className="font-bold text-on-surface">{formatCurrency(student.refundDue)}</span>
+                  </p>
+                )}
+                <p className="text-[14px] font-bold text-error mt-2 uppercase tracking-wide">
+                  Do not chase for payment
+                </p>
+              </div>
+            </section>
+          )}
+
+          {/* Instalment Plan Notice */}
+          {student.status === 'INSTALMENT_PLAN' && student.nextInstalmentDate && student.nextInstalmentAmount && (
+            <section>
+              <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-sm flex items-start gap-3">
+                <span className="material-symbols-outlined text-primary text-[24px]">calendar_clock</span>
+                <div>
+                  <h3 className="text-[14px] font-bold text-on-surface">Active Instalment Plan</h3>
+                  <p className="text-[14px] text-on-surface-variant mt-1">
+                    Next payment of <span className="font-bold tabular-nums text-on-surface">{formatCurrency(student.nextInstalmentAmount)}</span> is due on <span className="font-semibold text-on-surface">{student.nextInstalmentDate}</span>.
+                  </p>
+                </div>
+              </div>
+            </section>
+          )}
+
           {/* Fee Components */}
           <section>
             <h3 className="text-[14px] font-bold text-on-surface-variant uppercase tracking-wider mb-3 flex items-center gap-2">

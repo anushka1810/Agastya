@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { FamilyGroup } from '../lib/groupByFamily';
 import { StudentRow } from './StudentRow';
 import type { Student } from '../types';
+import { computeStudentState } from '../lib/computeStudentState';
 
 interface FamilyCardProps {
   group: FamilyGroup;
@@ -35,7 +36,7 @@ export function FamilyCard({ group, selectedIds, onToggle, onClickRow }: FamilyC
               {group.guardianName} Family
             </h3>
             <p className="text-[12px] leading-[16px] text-on-surface-variant mt-0.5">
-              {group.students.length} children — <span className={group.totalBalance > 0 ? 'text-error font-semibold' : 'text-primary font-semibold'}>{formatCurrency(group.totalBalance)} due</span>
+              {group.students.length} children — <span className={group.totalBalance > 0 && group.students.some(s => computeStudentState(s).displayStatus.color === 'red' || computeStudentState(s).displayStatus.color === 'red-distinct') ? 'text-error font-semibold' : 'text-on-surface font-semibold'}>{formatCurrency(group.totalBalance)} due</span>
             </p>
           </div>
         </div>

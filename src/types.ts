@@ -38,7 +38,8 @@ export type StudentStatus =
   | 'PARTIALLY_PAID'
   | 'CREDIT_BALANCE'
   | 'PAYMENT_FAILED'
-  | 'INSTALMENT_PLAN';
+  | 'INSTALMENT_PLAN'
+  | 'WITHDRAWN';
 
 export type Student = {
   id: string;
@@ -57,6 +58,8 @@ export type Student = {
   daysOverdue: number;
   nextInstalmentDate?: string;
   nextInstalmentAmount?: number;
+  withdrawnOn?: string;
+  refundDue?: number;
   lastPaymentDate: string | null;
   remindersSent: number;
   lastReminderAt: string | null;

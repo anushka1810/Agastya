@@ -32,6 +32,9 @@ export function computeStudentState(student: Student): StudentUIState {
     case 'INSTALMENT_PLAN':
       displayStatus = { label: 'Instalment Plan', color: 'neutral' };
       break;
+    case 'WITHDRAWN':
+      displayStatus = { label: 'Withdrawn', color: 'neutral' };
+      break;
     default:
       displayStatus = { label: student.status, color: 'neutral' };
   }
